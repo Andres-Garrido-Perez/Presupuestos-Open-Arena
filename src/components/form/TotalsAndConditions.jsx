@@ -111,9 +111,9 @@ export default function TotalsAndConditions({
               <span className="text-[11px] uppercase tracking-wider text-slate-300 font-bold">
                 Resumen Económico
               </span>
-              <span className="text-[10.5px] px-2 py-0.5 rounded bg-[#344693] text-white font-bold">
+              {/* <span className="text-[10.5px] px-2 py-0.5 rounded bg-[#344693] text-white font-bold">
                 Tarifa No Abonado
-              </span>
+              </span> */}
             </div>
 
             <div className="space-y-2 text-xs border-b border-white/10 pb-3">
