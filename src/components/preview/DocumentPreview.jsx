@@ -33,6 +33,7 @@ export default function DocumentPreview({
       return concept.customTitle || 'Alquiler de instalaciones deportivas, incluido uso de piscina.';
     }
 
+    /* Indicador de franja horaria (Punta/Valle) comentado para que no se muestre en el PDF:
     const franjaText = facility.isFixed 
       ? '' 
       : concept.franja === 'fds' 
@@ -40,6 +41,8 @@ export default function DocumentPreview({
         : concept.franja === 'valle' 
           ? ' (Valle)' 
           : ' (Punta)';
+    */
+    const franjaText = '';
 
     const pistasText = concept.courts > 1 ? ` · ${concept.courts} pistas` : '';
     const horasText = ` · ${concept.hours}h`;
