@@ -1,12 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link id="app-favicon" rel="icon" type="image/png" href="/LogoOpenSinFondo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>presupuestos-open-arena</title>
+    <title>Open Arena | Generador de Presupuestos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+    
+    <script>
+      // Optimización en tiempo real de LogoOpenSinFondo.jpg para favicon de pestaña:
+      // 1. Elimina la cuadrícula de damero gris/blanco para dar transparencia 100% real y limpia.
+      // 2. Centra el logotipo en un lienzo cuadrado proporcional sin estirar ni deformar letras.
+      (function() {
+        var img = new Image();
+        img.src = '/LogoOpenSinFondo.jpg';
+        img.onload = function() {
+          try {
+            var size = 64; // Resolución óptima para pestañas Retina y pantallas estándar
+            var canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            var ctx = canvas.getContext('2d');
+
+            // Lienzo auxiliar para limpiar la cuadrícula de fondo
+            var tempCanvas = document.createElement('canvas');
+            tempCanvas.width = img.naturalWidth;
+            tempCanvas.height = img.naturalHeight;
+            var tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(img, 0, 0);
+
+            var imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            var d = imgData.data;
+            for (var i = 0; i < d.length; i += 4) {
+              var r = d[i], g = d[i+1], b = d[i+2];
+              var maxDiff = Math.max(Math.abs(r - g), Math.abs(r - b), Math.abs(g - b));
+              var brightness = (r + g + b) / 3;
+              // Detectar cuadros de la falsa transparencia (gris/blanco neutros claros)
+              if (brightness > 160 && maxDiff < 20) {
+                d[i + 3] = 0; // Hacer transparente
+              }
+            }
+            tempCtx.putImageData(imgData, 0, 0);
+
+            // Ajustar proporciones: centrado horizontal y vertical con margen para que no se corte
+            var targetWidth = size - 4;
+            var scale = targetWidth / img.naturalWidth;
+            var w = img.naturalWidth * scale;
+            var h = img.naturalHeight * scale;
+            var x = (size - w) / 2;
+            var y = (size - h) / 2;
+
+            ctx.drawImage(tempCanvas, x, y, w, h);
+
+            // Reemplazar dinámicamente el favicon de la pestaña
+            var link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+            if (link) {
+              link.type = 'image/png';
+              link.href = canvas.toDataURL('image/png');
+            }
+          } catch(err) {
+            // Fallback en caso de bloqueo de canvas
+          }
+        };
+      })();
+    </script>
   </head>
-  <body>
+  <body class="bg-[#f3ede1]/30 text-slate-800 antialiased selection:bg-[#2f7a52]/20 selection:text-[#1c2d52]">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

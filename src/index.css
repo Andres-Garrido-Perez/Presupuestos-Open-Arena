@@ -1,111 +1,136 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@theme {
+  --font-sans: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Colores oficiales Open Arena (https://openarena.es/) */
+  --color-brand-950: #101633;
+  --color-brand-900: #1a234d;
+  --color-brand-850: #232f66;
+  --color-brand-800: #2d3b7a;
+  --color-brand-700: #344693; /* Azul primario corporativo */
+  --color-brand-600: #4155ad;
+  --color-brand-500: #556bc9;
+  --color-brand-100: #e7ecf8;
+  --color-brand-50: #f3f6fc;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  /* Verde Pista y Acentos Deportivos */
+  --color-court-800: #1f5739;
+  --color-court-700: #276846;
+  --color-court-600: #2f7a52;
+  --color-court-500: #3ba06c;
+  --color-court-100: #e8f5ee;
+  --color-court-50: #f2f9f5;
+
+  /* Tierra Batida / Clay */
+  --color-clay-700: #8a421a;
+  --color-clay-600: #9e4e22;
+  --color-clay-500: #b5602f;
+  --color-clay-100: #fdf0e9;
+
+  /* Fondos y Neutros */
+  --color-arena-surface: #ffffff;
+  --color-arena-bg: #f8fafc;
+  --color-arena-paper: #f8f6f0;
+  --color-arena-border: #e2e8f0;
+}
+
+/* Scrollbar estilizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Reglas de impresión infalibles para A4 */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
   }
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  /* Ocultar elementos no imprimibles */
+  .no-print,
+  header,
+  nav,
+  button,
+  footer {
+    display: none !important;
   }
-}
 
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+  /* Ocultar todo el árbol de elementos visualmente */
+  body * {
+    visibility: hidden;
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+  /* Forzar que todos los contenedores padres de #printable-document existan y no colapsen */
+  #root,
+  #root > div,
+  main,
+  main > div,
+  main > div > div {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+  /* Hacer visible exclusivamente el documento y su contenido */
+  #printable-document,
+  #printable-document * {
+    visibility: visible !important;
+  }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  /* Posicionar el documento en la página A4 con dimensiones exactas */
+  #printable-document {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    min-height: 297mm !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 16mm 18mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
 }
