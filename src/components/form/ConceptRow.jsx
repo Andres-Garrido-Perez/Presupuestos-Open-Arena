@@ -5,7 +5,7 @@ import {
   calculateLineTotal,
   calculateBaseRate
 } from '../../utils/pricing';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, parseDuration } from '../../utils/formatters';
 
 export default function ConceptRow({
   concept,
@@ -26,8 +26,9 @@ export default function ConceptRow({
     const updates = {
       facilityId: newFacilityId,
       isCustom: Boolean(newFacility.isCustom),
-      // Si cambia a pádel, default 1.5h. Si no, 1h
-      hours: newFacility.isPadelBase ? 1.5 : (concept.hours || 1),
+      // Si cambia a pádel, default 1,30 (1h 30min). Si no, 1h
+      duration: newFacility.isPadelBase ? '1,30' : (concept.duration || '1,00'),
+      hours: newFacility.isPadelBase ? 1.5 : (parseDuration(concept.duration || '1,00').decimalHours),
       franja: newFacility.isFixed ? 'fixed' : (concept.franja || 'punta'),
       includeLight: newFacility.supportsLight ? concept.includeLight : false
     };
@@ -39,6 +40,10 @@ export default function ConceptRow({
 
     onChange(concept.id, updates);
   };
+
+  const currentDurationVal = concept.duration !== undefined
+    ? concept.duration
+    : (concept.hours ? (concept.hours === 1.5 ? '1,30' : String(concept.hours)) : (isPadel ? '1,30' : '1,00'));
 
   const lineTotal = calculateLineTotal(concept);
   const baseRate = calculateBaseRate(facility, concept.franja || 'punta');
@@ -65,7 +70,7 @@ export default function ConceptRow({
                 <option value="tenis_resina">Tenis Resina</option>
               </optgroup>
               <optgroup label="Pádel">
-                <option value="padel">Pádel (Sesión 1.5h · Cubierta / Descubierta)</option>
+                <option value="padel">Pádel (Sesión 1h 30min · Cubierta / Descubierta)</option>
               </optgroup>
               <optgroup label="Fútbol">
                 <option value="futbol_7">Fútbol 7</option>
@@ -168,26 +173,27 @@ export default function ConceptRow({
           </div>
         </div>
 
-        {/* Duración / Horas */}
+        {/* Duración / Horas y Minutos */}
         <div>
           <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-            {isPadel ? 'Duración (Base 1.5h)' : 'Horas de uso'}
+            {isPadel ? 'Duración (Sesión 1h 30m)' : 'Duración (h y min)'}
           </label>
           <div className="relative">
             <input
-              type="number"
-              min="0.5"
-              step={isPadel ? '1.5' : '0.5'}
-              value={concept.hours ?? (isPadel ? 1.5 : 1)}
-              onChange={(e) => onChange(concept.id, { hours: parseFloat(e.target.value) || 1 })}
-              className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-center font-medium text-slate-800 focus:ring-2 focus:ring-[#2f7a52] outline-none"
+              type="text"
+              value={currentDurationVal}
+              onChange={(e) => {
+                const val = e.target.value;
+                const parsed = parseDuration(val);
+                onChange(concept.id, { 
+                  duration: val, 
+                  hours: parsed.decimalHours 
+                });
+              }}
+              placeholder={isPadel ? '1,30' : '1,00'}
+              className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-center font-bold text-slate-800 focus:ring-2 focus:ring-[#2f7a52] outline-none"
             />
           </div>
-          {isPadel && (
-            <span className="text-[10px] text-slate-500 block text-center mt-0.5">
-              {(concept.hours || 1.5) / 1.5} sesión(es)
-            </span>
-          )}
         </div>
 
         {/* Precio unitario / Tarifa */}
@@ -207,7 +213,7 @@ export default function ConceptRow({
             <div className="bg-slate-100 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 font-semibold text-center">
               {formatCurrency(baseRate)}
               <span className="text-[10px] font-normal text-slate-500 ml-1">
-                /{isPadel ? '1.5h' : 'h'}
+                /{isPadel ? '1h 30m' : 'h'}
               </span>
             </div>
           )}
@@ -234,15 +240,24 @@ export default function ConceptRow({
 
             {concept.includeLight && (
               <div className="flex items-center gap-1 text-[11px] text-slate-600">
-                <span>Horas:</span>
+                <span>Luz:</span>
                 <input
-                  type="number"
-                  min="0.5"
-                  step="0.5"
-                  value={concept.lightHours ?? (concept.hours || 1)}
-                  onChange={(e) => onChange(concept.id, { lightHours: parseFloat(e.target.value) || 0 })}
-                  className="w-12 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-center"
+                  type="text"
+                  value={concept.lightDuration !== undefined ? concept.lightDuration : (concept.lightHours ? (concept.lightHours === 1.5 ? '1,30' : String(concept.lightHours)) : currentDurationVal)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const parsed = parseDuration(val);
+                    onChange(concept.id, { 
+                      lightDuration: val, 
+                      lightHours: parsed.decimalHours 
+                    });
+                  }}
+                  placeholder="1,30"
+                  className="w-16 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-center font-bold text-xs"
                 />
+                <span className="text-[10px] text-slate-500 font-medium">
+                  ({formatDuration(concept.lightDuration !== undefined ? concept.lightDuration : (concept.lightHours !== undefined ? concept.lightHours : currentDurationVal))})
+                </span>
               </div>
             )}
           </div>

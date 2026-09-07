@@ -3,7 +3,8 @@ import OpenArenaLogo from '../common/OpenArenaLogo';
 import { 
   formatCurrency, 
   formatDate, 
-  formatDocNumber 
+  formatDocNumber,
+  formatDuration
 } from '../../utils/formatters';
 import { 
   getFacilityById, 
@@ -45,7 +46,8 @@ export default function DocumentPreview({
     // const franjaText = '';
 
     const pistasText = concept.courts > 1 ? ` · ${concept.courts} pistas` : '';
-    const horasText = ` · ${concept.hours}h`;
+    const duracionStr = formatDuration(concept.duration !== undefined ? concept.duration : concept.hours);
+    const horasText = ` · ${duracionStr}`;
 
     return `${facility.name}${franjaText}${pistasText}${horasText}`;
   };
@@ -175,7 +177,7 @@ export default function DocumentPreview({
                     {/* Detalle adicional de suplemento de luz si aplica */}
                     {concept.includeLight && facility.supportsLight && (
                       <div className="text-[12px] text-slate-700 font-medium">
-                        * Incluye suplemento de luz ({concept.lightHours ?? concept.hours}h)
+                        * Incluye suplemento de luz ({formatDuration(concept.lightDuration !== undefined ? concept.lightDuration : (concept.lightHours !== undefined ? concept.lightHours : (concept.duration ?? concept.hours)))})
                       </div>
                     )}
                   </div>

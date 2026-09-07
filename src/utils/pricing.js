@@ -1,7 +1,10 @@
-1/**
+/**
  * Tarifas oficiales y lógica de cálculo para Open Arena
  * Solo tarifas "No Abonado"
  */
+import { parseDuration, formatDuration } from './formatters';
+
+export { parseDuration, formatDuration };
 
 export const DEFAULT_COMPANY = {
   razonSocial: 'CORDOBA DEPORTES 2016, S.L.',
@@ -174,14 +177,19 @@ export function calculateBaseRate(facility, franja) {
 export function calculateLineTotal(concept) {
   const facility = getFacilityById(concept.facilityId);
   const courts = Math.max(1, Number(concept.courts) || 1);
-  const hours = Math.max(0.25, Number(concept.hours) || 1);
+  const parsedDur = parseDuration(concept.duration !== undefined ? concept.duration : concept.hours);
+  const hours = Math.max(0.01, parsedDur.decimalHours);
   const includeLight = Boolean(concept.includeLight && facility.supportsLight);
-  const lightHours = includeLight ? Math.max(0, Number(concept.lightHours ?? hours) || 0) : 0;
+  const lightDurationVal = concept.lightDuration !== undefined
+    ? concept.lightDuration
+    : (concept.lightHours !== undefined ? concept.lightHours : (concept.duration ?? concept.hours));
+  const parsedLight = parseDuration(lightDurationVal);
+  const lightHours = includeLight ? Math.max(0, parsedLight.decimalHours) : 0;
   const lightExtra = includeLight ? lightHours * LIGHT_SUPPLEMENT_RATE * courts : 0;
 
   if (concept.isCustom || facility.isCustom) {
     const customUnitPrice = Number(concept.customUnitPrice) || 0;
-    const quantity = Number(concept.hours) || 1;
+    const quantity = hours;
     return (customUnitPrice * quantity * courts) + lightExtra;
   }
 
@@ -191,7 +199,7 @@ export function calculateLineTotal(concept) {
   }
 
   if (facility.isPadelBase) {
-    // Base 1.5h por sesión
+    // Base 1.5h (90 minutos) por sesión
     const sessionRate = calculateBaseRate(facility, concept.franja || 'punta');
     const sessions = hours / 1.5;
     return (sessions * sessionRate * courts) + lightExtra;

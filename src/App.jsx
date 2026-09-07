@@ -63,9 +63,11 @@ export default function App() {
       isCustom: false,
       franja: 'punta',
       courts: 1,
-      hours: 1.5, // Pádel por defecto 1.5h por sesión
+      duration: '1,30', // Pádel por defecto 1 sesión de 1h 30min
+      hours: 1.5,
       note: '',
       includeLight: false,
+      lightDuration: '1,30',
       lightHours: 1.5
     };
     setConcepts(prev => [...prev, newConcept]);
@@ -80,9 +82,11 @@ export default function App() {
       customUnitPrice: 430.00,
       franja: 'fixed',
       courts: 1,
+      duration: '1,00',
       hours: 1,
       note: 'Nº USUARIOS 26',
       includeLight: false,
+      lightDuration: '1,00',
       lightHours: 1
     };
     setConcepts(prev => [...prev, newConcept]);
@@ -157,9 +161,11 @@ export default function App() {
         isCustom: false,
         franja: 'fds',
         courts: 4,
-        hours: 3, // 2 sesiones de 1.5h
+        duration: '3,00',
+        hours: 3, // 2 sesiones de 1h 30m
         note: 'TORNEO FIN DE SEMANA (PISTAS 1 A 4)',
         includeLight: false,
+        lightDuration: '3,00',
         lightHours: 3
       },
       {
@@ -168,9 +174,11 @@ export default function App() {
         isCustom: false,
         franja: 'punta',
         courts: 2,
+        duration: '2,00',
         hours: 2,
         note: 'PISTAS CENTRALES CON ILUMINACIÓN',
         includeLight: true,
+        lightDuration: '2,00',
         lightHours: 2
       }
     ]);
