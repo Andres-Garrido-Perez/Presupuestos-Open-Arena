@@ -1,4 +1,4 @@
-/**
+1/**
  * Tarifas oficiales y lógica de cálculo para Open Arena
  * Solo tarifas "No Abonado"
  */
@@ -22,8 +22,8 @@ export const SPORT_FACILITIES = [
     isFixed: false,
     defaultDuration: 1,
     rates: {
-      punta: 20.00,
-      valle: 17.50
+      punta: 20.50,
+      valle: 18.00
     },
     supportsLight: true,
     unit: 'hora'
@@ -35,8 +35,8 @@ export const SPORT_FACILITIES = [
     isFixed: false,
     defaultDuration: 1,
     rates: {
-      punta: 16.50,
-      valle: 11.50
+      punta: 17.00,
+      valle: 12.00
     },
     supportsLight: true,
     unit: 'hora'
@@ -48,8 +48,8 @@ export const SPORT_FACILITIES = [
     isFixed: false,
     defaultDuration: 1,
     rates: {
-      punta: 11.50,
-      valle: 9.50
+      punta: 12.00,
+      valle: 10.00
     },
     supportsLight: true,
     unit: 'hora'
@@ -63,7 +63,7 @@ export const SPORT_FACILITIES = [
     isPadelBase: true,
     rates: {
       punta: 22.00, // Por sesión de 1.5h
-      valle: 14.00, // Por sesión de 1.5h
+      valle: 16.00, // Por sesión de 1.5h
       fds: 20.00    // FDS (desde viernes tarde) por sesión de 1.5h
     },
     supportsLight: false,
